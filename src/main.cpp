@@ -32,7 +32,9 @@ void setup()
     log_i("SDK version: %s", ESP.getSdkVersion());
 
     smartdisplay_init();
-
+#ifdef BOARD_HAS_CDS
+    smartdisplay_lcd_set_brightness_cb(smartdisplay_lcd_adaptive_brightness_cds, 100); // todo limit min value
+#endif
     __attribute__((unused)) auto disp = lv_disp_get_default();
     lv_disp_set_rotation(disp, LV_DISP_ROT_90);
     // lv_disp_set_rotation(disp, LV_DISP_ROT_180);
@@ -67,7 +69,7 @@ void setup()
 
     log_i("sht init(): %s", sht.init(Wire1) ? "ok" : "fail");
 
-    sht.setAccuracy(SHTSensor::SHT_ACCURACY_MEDIUM); 
+    sht.setAccuracy(SHTSensor::SHT_ACCURACY_MEDIUM);
 
     ui_init();
     init_values();
