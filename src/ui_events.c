@@ -40,3 +40,15 @@ void setfanspeed_cb(lv_event_t *e)
 	int value = lv_slider_get_value(slider);
 	check_and_update_fan_pwm(value);
 }
+
+void continue_cb(lv_event_t *e)
+{
+	reset_failure();
+}
+
+void reset_pid_cb(lv_event_t *e)
+{
+	log_i("resetted pid");
+	memset(&autopid, 0, sizeof(autopid_t));
+	save_pid();
+}

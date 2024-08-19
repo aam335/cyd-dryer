@@ -26,3 +26,15 @@ def plus30m_cb(event_struct):
 def setfanspeed_cb(event_struct):
     return
 
+
+def continue_cb(event_struct):
+    return
+
+
+def plus1h_long_cb(event_struct):
+    return
+
+
+def reset_pid_cb(event_struct):
+    return
+

@@ -288,17 +288,68 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_style_pad_top(ui_sensor, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_bottom(ui_sensor, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    ui_humidity = lv_label_create(ui_sensor);
-    lv_obj_set_width(ui_humidity, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_humidity, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_align(ui_humidity, LV_ALIGN_BOTTOM_RIGHT);
-    lv_label_set_text(ui_humidity, "33%");
-
     ui_crrettemp = lv_label_create(ui_sensor);
     lv_obj_set_width(ui_crrettemp, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_crrettemp, LV_SIZE_CONTENT);    /// 1
     lv_obj_set_align(ui_crrettemp, LV_ALIGN_BOTTOM_LEFT);
     lv_label_set_text(ui_crrettemp, "63");
+
+    ui_resetpid = lv_btn_create(ui_sensor);
+    lv_obj_set_width(ui_resetpid, LV_SIZE_CONTENT);   /// 30
+    lv_obj_set_height(ui_resetpid, LV_SIZE_CONTENT);    /// 50
+    lv_obj_set_align(ui_resetpid, LV_ALIGN_BOTTOM_RIGHT);
+    lv_obj_add_flag(ui_resetpid, LV_OBJ_FLAG_SCROLL_ON_FOCUS);     /// Flags
+    lv_obj_clear_flag(ui_resetpid, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_set_style_pad_left(ui_resetpid, 12, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui_resetpid, 12, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui_resetpid, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui_resetpid, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_pid = lv_label_create(ui_resetpid);
+    lv_obj_set_width(ui_pid, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_pid, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_align(ui_pid, LV_ALIGN_BOTTOM_RIGHT);
+    lv_label_set_text(ui_pid, "PID");
+    ui_object_set_themeable_style_property(ui_pid, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_TEXT_COLOR,
+                                           _ui_theme_color_bubbttontext);
+    ui_object_set_themeable_style_property(ui_pid, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_TEXT_OPA,
+                                           _ui_theme_alpha_bubbttontext);
+
+    ui_status = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_status, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_status, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_align(ui_status, LV_ALIGN_BOTTOM_MID);
+
+    ui_errormodal = lv_obj_create(ui_Screen1);
+    lv_obj_set_width(ui_errormodal, lv_pct(80));
+    lv_obj_set_height(ui_errormodal, lv_pct(80));
+    lv_obj_set_align(ui_errormodal, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_errormodal, LV_OBJ_FLAG_HIDDEN);     /// Flags
+    lv_obj_clear_flag(ui_errormodal, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+
+    ui_Button1 = lv_btn_create(ui_errormodal);
+    lv_obj_set_width(ui_Button1, 100);
+    lv_obj_set_height(ui_Button1, 50);
+    lv_obj_set_x(ui_Button1, 0);
+    lv_obj_set_y(ui_Button1, 55);
+    lv_obj_set_align(ui_Button1, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_Button1, LV_OBJ_FLAG_SCROLL_ON_FOCUS);     /// Flags
+    lv_obj_clear_flag(ui_Button1, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+
+    ui_errortext = lv_label_create(ui_errormodal);
+    lv_obj_set_width(ui_errortext, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_errortext, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_errortext, -6);
+    lv_obj_set_y(ui_errortext, -28);
+    lv_obj_set_align(ui_errortext, LV_ALIGN_CENTER);
+
+    ui_Label6 = lv_label_create(ui_errormodal);
+    lv_obj_set_width(ui_Label6, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_Label6, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_Label6, -4);
+    lv_obj_set_y(ui_Label6, 55);
+    lv_obj_set_align(ui_Label6, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_Label6, "contine");
 
     lv_obj_add_event_cb(ui_temperature, ui_event_temperature, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_onoffarea, ui_event_onoffarea, LV_EVENT_ALL, NULL);
@@ -307,5 +358,8 @@ void ui_Screen1_screen_init(void)
     lv_obj_add_event_cb(ui_plus1h, ui_event_plus1h, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_plus30m, ui_event_plus30m, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_setfanspeed, ui_event_setfanspeed, LV_EVENT_ALL, NULL);
+    lv_obj_add_event_cb(ui_pid, ui_event_pid, LV_EVENT_ALL, NULL);
+    lv_obj_add_event_cb(ui_resetpid, ui_event_resetpid, LV_EVENT_ALL, NULL);
+    lv_obj_add_event_cb(ui_Button1, ui_event_Button1, LV_EVENT_ALL, NULL);
 
 }

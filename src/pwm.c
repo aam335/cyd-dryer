@@ -44,17 +44,23 @@ bool bresenham_getNext(struct bresenham_t *st)
 typedef struct pwm
 {
   bresenham_t bs;
-  int8_t pin;
+  int8_t pin, pin2;
+  bool inverse_pin, inverse_pin2;
   uint16_t new_value;
   bool flag_update;
 } pwm_t;
 
 static pwm_t pwms[] = {
-    {.pin = HEATER_PIN, .new_value = 0, .flag_update = true, .bs.size = PWM_FULL_CYCLE},
-    {.pin = FAN_PIN, .new_value = 0, .flag_update = true, .bs.size = PWM_FULL_CYCLE},
+    {.pin = HEATER_PIN, .inverse_pin = false, .new_value = 0, .flag_update = true, .bs.size = PWM_FULL_CYCLE, .pin2 = RGB_LED_R, .inverse_pin2 = true},
+    {.pin = FAN_PIN, .inverse_pin = false, .new_value = 0, .flag_update = true, .bs.size = PWM_FULL_CYCLE, .pin2 = RGB_LED_B, .inverse_pin2 = true},
 };
 
 int current_count = 0;
+
+inline int pin_value(bool v, bool inverted)
+{
+  return inverted ? !v : v;
+}
 
 void millis_handler_irq()
 {
@@ -74,12 +80,10 @@ void millis_handler_irq()
       p->flag_update = false;
     }
     bool v = bresenham_getNext(&p->bs);
-    if (v)
-    {
-      digitalWrite(p->pin,1);
-      continue;
-    }
-    digitalWrite(p->pin,0);
+
+    digitalWrite(p->pin, pin_value(p->inverse_pin, v));
+    if (p->pin2 >= 0)
+      digitalWrite(p->pin2, pin_value(p->inverse_pin2, v));
   }
 }
 

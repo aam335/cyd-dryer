@@ -41,8 +41,17 @@ lv_obj_t * ui_fanspeed;
 void ui_event_setfanspeed(lv_event_t * e);
 lv_obj_t * ui_setfanspeed;
 lv_obj_t * ui_sensor;
-lv_obj_t * ui_humidity;
 lv_obj_t * ui_crrettemp;
+void ui_event_resetpid(lv_event_t * e);
+lv_obj_t * ui_resetpid;
+void ui_event_pid(lv_event_t * e);
+lv_obj_t * ui_pid;
+lv_obj_t * ui_status;
+lv_obj_t * ui_errormodal;
+void ui_event_Button1(lv_event_t * e);
+lv_obj_t * ui_Button1;
+lv_obj_t * ui_errortext;
+lv_obj_t * ui_Label6;
 lv_obj_t * ui____initial_actions0;
 
 ///////////////////// TEST LVGL SETTINGS ////////////////////
@@ -94,6 +103,7 @@ void ui_event_plus1h(lv_event_t * e)
     lv_obj_t * target = lv_event_get_target(e);
     if(event_code == LV_EVENT_CLICKED) {
         plus1h_cb(e);
+        (e);
     }
 }
 void ui_event_plus30m(lv_event_t * e)
@@ -110,6 +120,30 @@ void ui_event_setfanspeed(lv_event_t * e)
     lv_obj_t * target = lv_event_get_target(e);
     if(event_code == LV_EVENT_CLICKED) {
         setfanspeed_cb(e);
+    }
+}
+void ui_event_resetpid(lv_event_t * e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t * target = lv_event_get_target(e);
+    if(event_code == LV_EVENT_LONG_PRESSED) {
+        reset_pid_cb(e);
+    }
+}
+void ui_event_pid(lv_event_t * e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t * target = lv_event_get_target(e);
+    if(event_code == LV_EVENT_LONG_PRESSED) {
+        (e);
+    }
+}
+void ui_event_Button1(lv_event_t * e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t * target = lv_event_get_target(e);
+    if(event_code == LV_EVENT_PRESSED) {
+        continue_cb(e);
     }
 }
 

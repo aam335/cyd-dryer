@@ -4,10 +4,19 @@
 // See README for more details - https://github.com/jackw01/arduino-pid-autotuner/blob/master/README.md
 
 #include "dryer.h"
+
 autopid_t autopid;
 
 void autopid_init(int min_output, int max_output, float target, uint8_t zn_mode)
 {
+    if (autopid_finished())
+    {
+        autopid.target_input_value = target;
+        autopid.microseconds = system_millis;
+        autopid.err_sum = 0;
+        autopid.last_err = 0;
+        return;
+    }
     memset(&autopid, 0, sizeof(autopid_t));
     autopid.zn_mode = zn_mode;
     autopid.loop_interval = DEFAULT_LOOP_INTERVAL;
@@ -32,7 +41,7 @@ float autopid_tune_pid(float input, uint32_t ms)
     autopid.max = (autopid.max > input) ? autopid.max : input;
     autopid.min = (autopid.min < input) ? autopid.min : input;
 
-    if (autopid.output && input > autopid.target_input_value)
+    if (autopid.output && input > autopid.target_input_value + PREHEATING_TARGET_TEMP_MAX_DELTA)
     {
         autopid.output = false;
         autopid.output_value = autopid.min_output;
@@ -41,7 +50,7 @@ float autopid_tune_pid(float input, uint32_t ms)
         autopid.max = autopid.target_input_value;
     }
 
-    if (!autopid.output && input < autopid.target_input_value)
+    if (!autopid.output && input < autopid.target_input_value - PREHEATING_TARGET_TEMP_MAX_DELTA)
     {
         autopid.output = true;
         autopid.output_value = autopid.max_output;

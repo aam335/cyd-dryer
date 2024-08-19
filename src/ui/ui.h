@@ -49,8 +49,17 @@ extern lv_obj_t * ui_fanspeed;
 void ui_event_setfanspeed(lv_event_t * e);
 extern lv_obj_t * ui_setfanspeed;
 extern lv_obj_t * ui_sensor;
-extern lv_obj_t * ui_humidity;
 extern lv_obj_t * ui_crrettemp;
+void ui_event_resetpid(lv_event_t * e);
+extern lv_obj_t * ui_resetpid;
+void ui_event_pid(lv_event_t * e);
+extern lv_obj_t * ui_pid;
+extern lv_obj_t * ui_status;
+extern lv_obj_t * ui_errormodal;
+void ui_event_Button1(lv_event_t * e);
+extern lv_obj_t * ui_Button1;
+extern lv_obj_t * ui_errortext;
+extern lv_obj_t * ui_Label6;
 extern lv_obj_t * ui____initial_actions0;
 
 

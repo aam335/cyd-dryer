@@ -32,7 +32,7 @@ enum
 #define M_PI 3.14159265358979323846
 
 #define DEFAULT_LOOP_INTERVAL ESM_POLL_INTERVAL
-#define DEFAULT_TUNING_CYCLES 3
+#define DEFAULT_TUNING_CYCLES 10
 
 extern autopid_t autopid;
 #ifdef __cplusplus

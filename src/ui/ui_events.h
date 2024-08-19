@@ -17,6 +17,8 @@ void minuns30m_cb(lv_event_t * e);
 void plus1h_cb(lv_event_t * e);
 void plus30m_cb(lv_event_t * e);
 void setfanspeed_cb(lv_event_t * e);
+void reset_pid_cb(lv_event_t * e);
+void continue_cb(lv_event_t * e);
 
 #ifdef __cplusplus
 } /*extern "C"*/
