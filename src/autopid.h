@@ -15,11 +15,11 @@ typedef struct
     long microseconds, t1, t2, t_high, t_low;
     float max, min;
     float p_average, i_average, d_average;
-
+    float ku_average, tu_average;
     float kp, ki, kd;
 
     float err_sum, last_err;
-    
+
 } autopid_t;
 
 enum
@@ -39,10 +39,10 @@ extern autopid_t autopid;
 extern "C"
 {
 #endif
-void autopid_init(int min_output, int max_output, float target, uint8_t zn_mode);
-float autopid_tune_pid(float input, uint32_t us);
-bool autopid_finished();
-float autopid_run(float input, uint32_t ms);
+    void autopid_init(int min_output, int max_output, float target, uint8_t zn_mode);
+    float autopid_tune_pid(float input, uint32_t us);
+    bool autopid_finished();
+    float autopid_run(float input, uint32_t ms);
 #ifdef __cplusplus
 } /*extern "C"*/
 #endif

@@ -25,8 +25,6 @@ extern "C"
     void show_text_status();
     void apply_emergency_stop();
 
-    void sensors_update(float temperature, float humidity);
-    float get_median_hum();
     float get_median_temp();
 
     void reset_failure();
@@ -38,7 +36,7 @@ extern "C"
 
     void load_pid();
     void save_pid();
-    
+
     float ntc_read();
     void ntc_init(int);
 
@@ -72,8 +70,8 @@ extern "C"
 #define NORMAL_FAN_PWM 50
 #define START_FAN_PWM 50
 
-#define HEATER_PIN GPIO_NUM_12
-#define FAN_PIN GPIO_NUM_18
+#define HEATER_PIN GPIO_NUM_21 // GPIO_NUM_12
+#define FAN_PIN GPIO_NUM_22    // GPIO_NUM_18
 #define THERMISTOR_PIN GPIO_NUM_35
 
 #define ERRORED_SENSOR (-10000)
@@ -81,7 +79,7 @@ extern "C"
 #define SENSOR_MIN_TEMP -40
 
 #define SENSORS_POLL_INTERVAL 50
-#define SENSORS_MED_COUNT (2000 / SENSORS_POLL_INTERVAL)
+#define SENSORS_MED_COUNT 5
 
 #define NOTIFY_POLL_INTERVAL 1000
 #define STATUS_POLL_INTERVAL 1000
@@ -92,6 +90,10 @@ extern "C"
 #define CHECK_HEATER_MIN_DELTA 0.5
 #define PREHEATING_TARGET_TEMP_MS 60000
 #define PREHEATING_TARGET_TEMP_MAX_DELTA 0.6
+
+#define TUNE_PID_DELTA 0.5 // filter
+#define TUNE_PID_WASTE_PEAKS 4
+
 #define PREHEATING_GANGBANG_MIN_CYCLES 10
 #define PREHEATING_MIN_PERIOD 10 * 60 * 1000
 
@@ -117,3 +119,11 @@ enum FAILURES
     FAIL_DOOR_OPENED,
     FAIL_SENSOR,
 };
+
+typedef struct
+{
+    bool is_initialized;
+    uint8_t zn_mode;
+    float ki,kd,kp;
+    
+} config_t;

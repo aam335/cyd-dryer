@@ -33,6 +33,41 @@ void autopid_init(int min_output, int max_output, float target, uint8_t zn_mode)
     autopid.max = -1000000000000;
     autopid.min = 1000000000000;
     autopid.p_average = autopid.i_average = autopid.d_average = 0;
+
+    autopid.ku_average = 0;
+    autopid.tu_average = 0;
+}
+void autopid_refresh_pids()
+{
+    if (autopid.i < autopid.cycles)
+    {
+        return;
+    }
+    float kp_constant, ti_constant, td_constant;
+    switch (autopid.zn_mode)
+    {
+    case ZN_MODE_BASIC_PID:
+        kp_constant = 0.6;
+        ti_constant = 0.5;
+        td_constant = 0.125;
+        break;
+    case ZN_MODE_LESS_OVERSHOOT:
+        kp_constant = 0.33;
+        ti_constant = 0.5;
+        td_constant = 0.33;
+        break;
+    default: // Default to No Overshoot mode as it is the safest
+        kp_constant = 0.2;
+        ti_constant = 0.5;
+        td_constant = 0.33;
+    }
+
+    float ku = autopid.ku_average / (autopid.i - TUNE_PID_WASTE_PEAKS);
+    float tu = autopid.tu_average / (autopid.i - TUNE_PID_WASTE_PEAKS);
+
+    autopid.kp = kp_constant * ku;
+    autopid.ki = (autopid.kp / (ti_constant * tu)) * autopid.loop_interval;
+    autopid.kd = (td_constant * autopid.kp * tu) / autopid.loop_interval;
 }
 
 float autopid_tune_pid(float input, uint32_t ms)
@@ -41,7 +76,7 @@ float autopid_tune_pid(float input, uint32_t ms)
     autopid.max = (autopid.max > input) ? autopid.max : input;
     autopid.min = (autopid.min < input) ? autopid.min : input;
 
-    if (autopid.output && input > autopid.target_input_value + PREHEATING_TARGET_TEMP_MAX_DELTA)
+    if (autopid.output && input > autopid.target_input_value)
     {
         autopid.output = false;
         autopid.output_value = autopid.min_output;
@@ -50,7 +85,7 @@ float autopid_tune_pid(float input, uint32_t ms)
         autopid.max = autopid.target_input_value;
     }
 
-    if (!autopid.output && input < autopid.target_input_value - PREHEATING_TARGET_TEMP_MAX_DELTA)
+    if (!autopid.output && input < autopid.target_input_value - TUNE_PID_DELTA)
     {
         autopid.output = true;
         autopid.output_value = autopid.max_output;
@@ -61,34 +96,10 @@ float autopid_tune_pid(float input, uint32_t ms)
 
         float tu = autopid.t_low + autopid.t_high;
 
-        float kp_constant, ti_constant, td_constant;
-        switch (autopid.zn_mode)
+        if (autopid.i > TUNE_PID_WASTE_PEAKS)
         {
-        case ZN_MODE_BASIC_PID:
-            kp_constant = 0.6;
-            ti_constant = 0.5;
-            td_constant = 0.125;
-            break;
-        case ZN_MODE_LESS_OVERSHOOT:
-            kp_constant = 0.33;
-            ti_constant = 0.5;
-            td_constant = 0.33;
-            break;
-        default: // Default to No Overshoot mode as it is the safest
-            kp_constant = 0.2;
-            ti_constant = 0.5;
-            td_constant = 0.33;
-        }
-
-        autopid.kp = kp_constant * ku;
-        autopid.ki = (autopid.kp / (ti_constant * tu)) * autopid.loop_interval;
-        autopid.kd = (td_constant * autopid.kp * tu) / autopid.loop_interval;
-
-        if (autopid.i > 1)
-        {
-            autopid.p_average += autopid.kp;
-            autopid.i_average += autopid.ki;
-            autopid.d_average += autopid.kd;
+            autopid.ku_average+=ku;
+            autopid.tu_average+=tu;
         }
         autopid.min = autopid.target_input_value;
         autopid.i++;
@@ -98,9 +109,7 @@ float autopid_tune_pid(float input, uint32_t ms)
     {
         autopid.output = false;
         autopid.output_value = autopid.min_output;
-        autopid.kp = autopid.p_average / (autopid.i - 1);
-        autopid.ki = autopid.i_average / (autopid.i - 1);
-        autopid.kd = autopid.d_average / (autopid.i - 1);
+        autopid_refresh_pids();
     }
 
     return autopid.output_value;

@@ -24,11 +24,11 @@ void show_pid_status()
 {
     if (autopid_finished())
     {
-        lv_obj_clear_flag(ui_resetpid, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(ui_reset_pid, LV_OBJ_FLAG_HIDDEN);
 
         return;
     }
-    lv_obj_add_flag(ui_resetpid, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_reset_pid, LV_OBJ_FLAG_HIDDEN);
 }
 
 void check_and_update_timer(int delta)
@@ -105,7 +105,7 @@ void apply_onoff()
 void apply_emergency_stop()
 {
     stop_esm();
-    // log_i("STOP!!! status_esm=%i", status_esm());
+    log_i("STOP!!! status_esm=%i", status_esm());
     show_onoff();
 }
 static char debug_text[200];

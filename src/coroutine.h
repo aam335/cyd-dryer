@@ -15,6 +15,12 @@
         return x;               \
     case __LINE__:;             \
     } while (0)
+#define crNext()                \
+    do                          \
+    {                           \
+        crStaticVar = __LINE__; \
+    case __LINE__:;             \
+    } while (0)
 #define crFinish }
 
 #define crDef(NAME)  \
@@ -23,11 +29,9 @@
 #define crPoll(NAME)                                                   \
     do                                                                 \
     {                                                                  \
-        if (system_millis - APPEND(NAME, _last) > APPEND(NAME, _next)) \
+        if (system_millis - APPEND(NAME, _last) >= APPEND(NAME, _next)) \
         {                                                              \
             APPEND(NAME, _next) = NAME();                              \
             APPEND(NAME, _last) = system_millis;                       \
         }                                                              \
     } while (0)
-
-    

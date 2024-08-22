@@ -52,3 +52,33 @@ void reset_pid_cb(lv_event_t *e)
 	memset(&autopid, 0, sizeof(autopid_t));
 	save_pid();
 }
+
+void reset_menu_pid(lv_event_t * e)
+{
+	// Your code here
+}
+
+void save_menu_data(lv_event_t * e)
+{
+	// Your code here
+}
+
+void ki_text_cb(lv_event_t * e)
+{
+	// Your code here
+}
+
+void kp_text_cb(lv_event_t * e)
+{
+	// Your code here
+}
+
+void kd_text_cb(lv_event_t * e)
+{
+	// Your code here
+}
+
+void load_menu_config(lv_event_t * e)
+{
+	// Your code here
+}

@@ -17,6 +17,7 @@ extern "C"
 void gpio_init_pwm_pins();
 void millis_handler_irq();
 void set_pwm(int i, int value);
+void set_pwm_percents(int i, int value);
 int get_pwm(int i);
 #ifdef __cplusplus
 } /*extern "C"*/

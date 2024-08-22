@@ -102,7 +102,7 @@ uint32_t poll_status()
     return STATUS_POLL_INTERVAL;
 }
 int ht_read_error_count = 0;
-
+#include <driver/adc.h>
 uint32_t poll_sensors()
 {
     float t_celsius = ntc_read();
@@ -118,7 +118,7 @@ uint32_t poll_sensors()
     }
 
     // apply_temperature(t_celsius, ERRORED_SENSOR);
-
+   
     return SENSORS_POLL_INTERVAL;
 }
 

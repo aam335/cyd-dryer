@@ -57,7 +57,6 @@ bool _esm_precooling()
 {
     if (esm.back_temperature > target_temperature)
     {
-
         return ESM_CONTINUE_STATE;
     }
     return ESM_NEXT_STATE;
@@ -81,7 +80,7 @@ bool _esm_heater_check()
 }
 bool _esm_preheating_dumb()
 {
-    if (esm.back_temperature < (target_temperature + PREHEATING_TARGET_TEMP_MAX_DELTA))
+    if (esm.back_temperature < target_temperature)
     {
         return ESM_CONTINUE_STATE;
     }
@@ -94,7 +93,7 @@ bool _esm_preheating()
     switch (esm.gangbang_cycle & 1)
     {
     case 0: // heating
-        if (esm.back_temperature < (target_temperature + PREHEATING_TARGET_TEMP_MAX_DELTA))
+        if (esm.back_temperature < (target_temperature))
         {
             return ESM_CONTINUE_STATE;
         }
@@ -165,8 +164,7 @@ bool _esm_on_air()
         esm.undertemp_ms = MAX_UNDERTEMP_MS;
     }
     int pwm = autopid_run(esm.back_temperature, system_millis);
-    set_pwm(PWM_HEATER, (int)pwm);
-    log_i("pwm=%f", (int)pwm);
+    set_pwm(PWM_HEATER, pwm);
     if (seconds_left > 0)
     {
         return ESM_CONTINUE_STATE;
@@ -176,20 +174,20 @@ bool _esm_on_air()
 
 uint32_t poll_esm()
 {
-    unsigned long system_millis = millis();
-
     // state standby
     if (_esm_at_start() != ESM_NEXT_STATE)
     {
         return ESM_POLL_INTERVAL;
     }
-
     crBegin;
     esm_status = STATUS_PRECOOLING;
-    esm.algo_fan_pwm = PWM_FULL_CYCLE;
+    esm.algo_fan_pwm = MAX_FAN_PWM;
     set_pwm(PWM_HEATER, 0);
-    crReturn(0);
+
+    crNext();
+
     { // precooling
+
         if (_esm_precooling() != ESM_NEXT_STATE)
         {
             return ESM_POLL_INTERVAL;
@@ -199,10 +197,10 @@ uint32_t poll_esm()
         esm.preheating_start_ms = system_millis;
         esm.preheating_prev_temp = esm.back_temperature;
         set_pwm(PWM_HEATER, PWM_FULL_CYCLE);
-        esm.algo_fan_pwm = PWM_FULL_CYCLE * NORMAL_FAN_PWM / 100;
+        esm.algo_fan_pwm = NORMAL_FAN_PWM;
     }
 
-    crReturn(0);
+    crNext();
 
     { // heater check
         if (_esm_heater_check() != ESM_NEXT_STATE)
@@ -217,7 +215,7 @@ uint32_t poll_esm()
         autopid_init(0, PWM_FULL_CYCLE, target_temperature, ZN_MODE_BASIC_PID);
     }
 
-    crReturn(0);
+    crNext();
 
     { // preheating && stabilizing
         seconds_left -= ESM_POLL_INTERVAL / 1000;
@@ -231,7 +229,7 @@ uint32_t poll_esm()
         esm.algo_fan_pwm = 0;
     }
 
-    crReturn(0);
+    crNext();
 
     { // autopid learning
         seconds_left -= ESM_POLL_INTERVAL / 1000;
@@ -241,7 +239,9 @@ uint32_t poll_esm()
         }
         esm_status = STATUS_ON_WORK;
     }
-    crReturn(0);
+
+    crNext();
+
     {
         seconds_left -= ESM_POLL_INTERVAL / 1000;
         if (_esm_on_air() != ESM_NEXT_STATE)
@@ -289,7 +289,7 @@ static uint32_t switch_off_delay_start = 0;
 
 void set_cooler_pwm()
 {
-    int cooler_pwm = PWM_FULL_CYCLE * fan_pwm / 100;
+    // int cooler_pwm = PWM_FULL_CYCLE * fan_pwm / 100;
     if (start_me == true)
     {
         switch_off_delay_start = system_millis;
@@ -305,10 +305,10 @@ void set_cooler_pwm()
     }
     if (esm.algo_fan_pwm > 0)
     {
-        set_pwm(PWM_FAN, esm.algo_fan_pwm);
+        set_pwm_percents(PWM_FAN, esm.algo_fan_pwm);
         return;
     }
-    set_pwm(PWM_FAN, cooler_pwm);
+    set_pwm_percents(PWM_FAN, fan_pwm);
 }
 
 uint16_t status_esm()

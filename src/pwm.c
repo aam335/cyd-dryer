@@ -95,7 +95,7 @@ void gpio_init_pwm_pins()
     pinMode(p->pin, OUTPUT);
   }
 }
-
+// set_pwm 0 to PWM_FULL_CYCLE
 void set_pwm(int i, int value)
 {
   if (i >= PWM_COUNT)
@@ -105,6 +105,12 @@ void set_pwm(int i, int value)
   pwm_t *p = &pwms[i];
   p->new_value = value;
   p->flag_update = true;
+}
+
+// set_pwm 0 to PWM_FULL_CYCLE
+void set_pwm_percents(int i, int value)
+{
+  set_pwm(i, value * PWM_FULL_CYCLE / 100);
 }
 
 int get_pwm(int i)
