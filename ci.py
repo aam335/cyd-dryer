@@ -63,7 +63,7 @@ for port in CYD_PORTS:
     port_path = f"out/{port}"
     os.chdir(BASE_DIR)
     os.makedirs(port_path, exist_ok=True)
-    os.chdir("CYD-Klipper")
+    # os.chdir("CYD-Klipper")
     subprocess.run(["pio", "run", "-e", port], check=True)
     os.chdir(BASE_DIR)
     for file in ["bootloader.bin", "partitions.bin", "firmware.bin"]:
