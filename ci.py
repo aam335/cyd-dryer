@@ -1,7 +1,6 @@
 import subprocess, os, shutil, json
 
 CYD_PORTS = [
-
     "esp32-2432S032C",
 ]
 
@@ -15,7 +14,7 @@ BASE_DIR = os.getcwd()
 def get_manifest(base_path : str, device_name : str):
     return {
         "name": f"to {device_name}",
-        "funding_url": "https://ko-fi.com/suchmememanyskill",
+        "funding_url": "",
         "new_install_prompt_erase": True,
         "builds": [
             {
