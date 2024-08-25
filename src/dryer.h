@@ -11,6 +11,21 @@
 #include "coroutine.h"
 #include "autopid.h"
 
+typedef struct
+{
+    bool is_initialized;
+    uint8_t zn_mode;
+    float ki, kd, kp;
+    float ku, tu;
+    int i;
+
+    int tmin, tmax, tstart;
+    int fan_start;
+
+    int r25, r_div, beta;
+
+} config_t;
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -21,7 +36,7 @@ extern "C"
     void check_and_update_target_temperature(int target);
     void check_and_update_timer(int delta);
     void check_and_update_fan_pwm(int target);
-    void show_pid_status();
+    // void show_pid_status();
     void show_text_status();
     void apply_emergency_stop();
 
@@ -34,11 +49,17 @@ extern "C"
     void set_debug_text(char *s);
     void clear_debug_text();
 
-    void load_pid();
-    void save_pid();
+    void save_data(void *config, size_t size, const char *name);
+    void load_data(void *config, size_t size, const char *name);
+
+    void load_config();
+    void save_config();
+    void save_pid(autopid_t *a);
+
+    config_t *get_config();
 
     float ntc_read();
-    void ntc_init(int);
+    void ntc_init(int pin, int r25, int r_div, int beta);
 
     uint32_t poll_esm();
 
@@ -54,6 +75,8 @@ extern "C"
 } /*extern "C"*/
 #endif
 
+#define PREFERENCES_CONFIG_NAME "cyd_dryer"
+
 #define ESM_POLL_INTERVAL PWM_INTERVAL
 #define ESM_POLL_INTERVAL_MIN 10
 #define MOTOR_OFF_DELAY 15000
@@ -62,7 +85,7 @@ extern "C"
 #define HALF_HOUR 1800
 #define MAX_TIMER (24 * HOUR)
 #define START_TIMER (6 * HOUR)
-#define START_TEMPERATURE 95
+#define START_TEMP 95
 #define MAX_TEMP 100
 #define MIN_TEMP 60
 #define MAX_FAN_PWM 100
@@ -101,6 +124,11 @@ extern "C"
 #define MAX_UNDERTEMP 10       // max temperature from target for esm restart
 #define MAX_UNDERTEMP_MS 15000 // max time, when temperature is undertarget - chamber is opened?
 
+#define NTC_R25 10000      // Resistance of Thermistor at 25 degree Celsius
+#define NTC_RDIV 10000     // voltage divider resistor value
+#define NTC_BETA 3950      // Beta value
+#define T25C_KELVIN 298.15 // Temperature in Kelvin for 25 degree Celsius
+
 enum STATUSES
 {
     STATUS_STANDBY,
@@ -119,11 +147,3 @@ enum FAILURES
     FAIL_DOOR_OPENED,
     FAIL_SENSOR,
 };
-
-typedef struct
-{
-    bool is_initialized;
-    uint8_t zn_mode;
-    float ki,kd,kp;
-    
-} config_t;

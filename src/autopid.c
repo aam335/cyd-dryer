@@ -37,14 +37,14 @@ void autopid_init(int min_output, int max_output, float target, uint8_t zn_mode)
     autopid.ku_average = 0;
     autopid.tu_average = 0;
 }
-void autopid_refresh_pids()
+void autopid_refresh_pids(autopid_t *a)
 {
-    if (autopid.i < autopid.cycles)
+    if (a->tu == 0)
     {
         return;
     }
     float kp_constant, ti_constant, td_constant;
-    switch (autopid.zn_mode)
+    switch (a->zn_mode)
     {
     case ZN_MODE_BASIC_PID:
         kp_constant = 0.6;
@@ -62,12 +62,9 @@ void autopid_refresh_pids()
         td_constant = 0.33;
     }
 
-    float ku = autopid.ku_average / (autopid.i - TUNE_PID_WASTE_PEAKS);
-    float tu = autopid.tu_average / (autopid.i - TUNE_PID_WASTE_PEAKS);
-
-    autopid.kp = kp_constant * ku;
-    autopid.ki = (autopid.kp / (ti_constant * tu)) * autopid.loop_interval;
-    autopid.kd = (td_constant * autopid.kp * tu) / autopid.loop_interval;
+    a->kp = kp_constant * a->ku;
+    a->ki = (a->kp / (ti_constant * a->tu)) * a->loop_interval;
+    a->kd = (td_constant * a->kp * a->tu) / a->loop_interval;
 }
 
 float autopid_tune_pid(float input, uint32_t ms)
@@ -98,8 +95,8 @@ float autopid_tune_pid(float input, uint32_t ms)
 
         if (autopid.i > TUNE_PID_WASTE_PEAKS)
         {
-            autopid.ku_average+=ku;
-            autopid.tu_average+=tu;
+            autopid.ku_average += ku;
+            autopid.tu_average += tu;
         }
         autopid.min = autopid.target_input_value;
         autopid.i++;
@@ -109,7 +106,11 @@ float autopid_tune_pid(float input, uint32_t ms)
     {
         autopid.output = false;
         autopid.output_value = autopid.min_output;
-        autopid_refresh_pids();
+
+        autopid.ku = autopid.ku_average / (autopid.i - TUNE_PID_WASTE_PEAKS);
+        autopid.tu = autopid.tu_average / (autopid.i - TUNE_PID_WASTE_PEAKS);
+
+        autopid_refresh_pids(&autopid);
     }
 
     return autopid.output_value;
@@ -117,7 +118,7 @@ float autopid_tune_pid(float input, uint32_t ms)
 
 bool autopid_finished()
 {
-    return autopid.i > autopid.cycles;
+    return autopid.kp != 0;
 }
 
 float autopid_run(float input, uint32_t ms)

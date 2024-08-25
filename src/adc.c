@@ -282,17 +282,26 @@ const float ADC_LUT[4096] = {0,
                              3996.0000, 3996.8000, 3997.3999, 3998.0000, 3998.8000, 3999.6001, 4000.0000, 4002.6001, 4004.8000, 4007.0000, 4009.3999, 4011.8000, 4014.0000, 4016.2000, 4026.80};
 int med_ptr;
 
-double R1 = 10000.0;  // voltage divider resistor value
-double Beta = 3950.0; // Beta value
-double To = 298.15;   // Temperature in Kelvin for 25 degree Celsius
-double Ro = 10000.0;  // Resistance of Thermistor at 25 degree Celsius
+
+typedef struct
+{
+    double r_div; // voltage divider resistor value
+    double beta;  // Beta value
+    double r25;   // Resistance of Thermistor at 25 degree Celsius
+} ntcx_t;
+
+ntcx_t ntcx;
 
 median_t *temperature;
 static int ntc_pin;
 static esp_adc_cal_characteristics_t adc_chars;
 
-void ntc_init(int pin)
+void ntc_init(int pin, int r25, int r_div, int beta)
 {
+    ntcx.r_div = r_div;
+    ntcx.r25 = r25;
+    ntcx.beta = beta;
+
     temperature = median_init(SENSORS_MED_COUNT);
     ntc_pin = pin;
     analogSetPinAttenuation(pin, ADC_11db);
@@ -316,8 +325,8 @@ float adc2temperature(int adc_in)
     double Vout, Rt = 0;
     double T, Tc = 0;
     Vout = (float)esp_adc_cal_raw_to_voltage(adc_in, &adc_chars) / 1000;
-    Rt = R1 * Vout / (V_REF - Vout);
-    T = 1 / (1 / To + log(Rt / Ro) / Beta); // Temperature in Kelvin
+    Rt = ntcx.r_div * Vout / (V_REF - Vout);
+    T = 1 / ((double)1 / (double)T25C_KELVIN  + log(Rt / ntcx.r25) / ntcx.beta); // Temperature in Kelvin
     Tc = T - 273.15;
     return Tc;
 }
@@ -325,7 +334,7 @@ float adc2temperature(int adc_in)
 float get_median_temp()
 {
     int adc_in = median_value(temperature);
-    float t=adc2temperature(adc_in);
+    float t = adc2temperature(adc_in);
     log_i("median: %f", t);
     return t;
 }

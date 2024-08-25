@@ -136,7 +136,7 @@ bool _esm_autopid()
             return ESM_CONTINUE_STATE;
         }
         log_i("autopid done!");
-        save_pid();
+        save_pid(&autopid);
     }
     return ESM_NEXT_STATE;
 }
@@ -211,8 +211,8 @@ uint32_t poll_esm()
         esm_status = STATUS_PREHEATING;
         esm.preheating_start_ms = system_millis;
         esm.gangbang_cycle = 0;
-        load_pid();
-        autopid_init(0, PWM_FULL_CYCLE, target_temperature, ZN_MODE_BASIC_PID);
+        config_t *c = get_config();
+        autopid_init(0, PWM_FULL_CYCLE, target_temperature, c->zn_mode);
     }
 
     crNext();

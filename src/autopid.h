@@ -16,6 +16,7 @@ typedef struct
     float max, min;
     float p_average, i_average, d_average;
     float ku_average, tu_average;
+    float ku, tu;
     float kp, ki, kd;
 
     float err_sum, last_err;
@@ -39,6 +40,8 @@ extern autopid_t autopid;
 extern "C"
 {
 #endif
+    void autopid_refresh_pids(autopid_t *a);
+
     void autopid_init(int min_output, int max_output, float target, uint8_t zn_mode);
     float autopid_tune_pid(float input, uint32_t us);
     bool autopid_finished();

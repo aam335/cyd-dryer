@@ -19,11 +19,10 @@ void plus30m_cb(lv_event_t * e);
 void setfanspeed_cb(lv_event_t * e);
 void load_menu_config(lv_event_t * e);
 void continue_cb(lv_event_t * e);
-void reset_menu_pid(lv_event_t * e);
-void ki_text_cb(lv_event_t * e);
-void kp_text_cb(lv_event_t * e);
-void kd_text_cb(lv_event_t * e);
+void pidselected(lv_event_t * e);
 void save_menu_data(lv_event_t * e);
+void reset_menu_pid(lv_event_t * e);
+void beta_click(lv_event_t * e);
 
 #ifdef __cplusplus
 } /*extern "C"*/

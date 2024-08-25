@@ -44,12 +44,12 @@ void setup()
     lv_disp_set_rotation(disp, LV_DISP_ROT_90);
     // lv_disp_set_rotation(disp, LV_DISP_ROT_180);
     // lv_disp_set_rotation(disp, LV_DISP_ROT_270);
-
+    load_config();
+    config_t *c = get_config();
+    ntc_init(THERMISTOR_PIN, c->r25, c->r_div, c->beta);
     ui_init();
     init_values();
     gpio_init_pwm_pins();
-    // lv_timer_handler();
-    // lv_timer_handler();
 
     smartdisplay_lcd_set_backlight(1.f);
 
@@ -57,8 +57,6 @@ void setup()
     timerAttachInterrupt(Timer0_Cfg, &Timer0_ISR, true);
     timerAlarmWrite(Timer0_Cfg, 1000, true);
     timerAlarmEnable(Timer0_Cfg);
-    load_pid();
-    ntc_init(THERMISTOR_PIN);
 }
 
 crDef(poll_esm2);
@@ -98,7 +96,7 @@ uint32_t poll_status()
     }
     show_text_status();
     check_and_update_timer(0);
-    show_pid_status();
+    // show_pid_status();
     return STATUS_POLL_INTERVAL;
 }
 int ht_read_error_count = 0;
@@ -118,7 +116,7 @@ uint32_t poll_sensors()
     }
 
     // apply_temperature(t_celsius, ERRORED_SENSOR);
-   
+
     return SENSORS_POLL_INTERVAL;
 }
 
@@ -136,33 +134,32 @@ uint32_t poll_notify()
     show_notify_on_failure();
     return NOTIFY_POLL_INTERVAL;
 }
-extern autopid_t autopid;
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-    void load_pid()
+    void load_data(void *config, size_t size, const char *name)
     {
-        memset(&autopid, 0, sizeof(autopid_t));
+        memset(config, 0, sizeof(config_t));
         Preferences preferences;
-        if (!preferences.begin("autopid", true))
+        if (!preferences.begin(name, true))
         {
             log_i("fail");
             return;
         }
-        preferences.getBytes("autopid", &autopid, sizeof(autopid_t));
-        log_i(":load preferences: ki:%f kd:%f kp:%f ready:%i", autopid.ki, autopid.kd, autopid.kp, autopid_finished());
-
+        size_t newsize = preferences.getBytes(name, config, size);
+        if (newsize != size)
+        {
+            memset(config, 0, sizeof(config_t));
+        }
         preferences.end();
     }
 
-    void save_pid()
+    void save_data(void *config, size_t size, const char *name)
     {
-        log_i(":save preferences: ki:%f kd:%f kp:%f ready:%i", autopid.ki, autopid.kd, autopid.kp, autopid_finished());
-
         Preferences preferences;
-        preferences.begin("autopid", false);
-        preferences.putBytes("autopid", &autopid, sizeof(autopid_t));
+        preferences.begin(name, false);
+        preferences.putBytes(name, config, size);
         preferences.end();
     }
 #ifdef __cplusplus

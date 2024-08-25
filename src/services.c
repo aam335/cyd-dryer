@@ -20,16 +20,16 @@ void apply_temperature(float temperature, float humidity)
         lv_label_set_text_fmt(ui_crrettemp, "%d °C", (int)(temperature + 0.5));
     }
 }
-void show_pid_status()
-{
-    if (autopid_finished())
-    {
-        lv_obj_clear_flag(ui_reset_pid, LV_OBJ_FLAG_HIDDEN);
+// void show_pid_status()
+// {
+//     if (autopid_finished())
+//     {
+//         lv_obj_clear_flag(ui_reset_pid, LV_OBJ_FLAG_HIDDEN);
 
-        return;
-    }
-    lv_obj_add_flag(ui_reset_pid, LV_OBJ_FLAG_HIDDEN);
-}
+//         return;
+//     }
+//     lv_obj_add_flag(ui_reset_pid, LV_OBJ_FLAG_HIDDEN);
+// }
 
 void check_and_update_timer(int delta)
 {
@@ -49,14 +49,14 @@ void check_and_update_timer(int delta)
 
 void check_and_update_target_temperature(int target)
 {
-
-    if (target > MAX_TEMP)
+    config_t *c=get_config();
+    if (target > c->tmax)
     {
-        target = MAX_TEMP;
+        target = c->tmax;
     }
-    if (target < MIN_TEMP)
+    if (target < c->tmin)
     {
-        target = MIN_TEMP;
+        target = c->tmin;
     }
     target_temperature = target;
     lv_label_set_text_fmt(ui_targettemp, "%d", target);
@@ -112,14 +112,16 @@ static char debug_text[200];
 
 void init_values()
 {
+    config_t *c=get_config();
+    
     seconds_left = START_TIMER;
-    target_temperature = START_TEMPERATURE;
-    lv_arc_set_range(ui_temperature, MIN_TEMP, MAX_TEMP);
+    target_temperature = c->tstart;
+    lv_arc_set_range(ui_temperature, c->tmin, c->tmax);
     check_and_update_timer(0);
-    check_and_update_target_temperature(START_TEMPERATURE);
-    check_and_update_fan_pwm(START_FAN_PWM);
-    lv_label_set_text_fmt(ui_mintemp, "%d", MIN_TEMP);
-    lv_label_set_text_fmt(ui_maxtemp, "%d", MAX_TEMP);
+    check_and_update_target_temperature(c->tstart);
+    check_and_update_fan_pwm(c->fan_start);
+    lv_label_set_text_fmt(ui_mintemp, "%d", c->tmin);
+    lv_label_set_text_fmt(ui_maxtemp, "%d", c->tmax);
     lv_obj_add_flag(ui_online, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui_errormodal, LV_OBJ_FLAG_HIDDEN);
     show_text_status();
