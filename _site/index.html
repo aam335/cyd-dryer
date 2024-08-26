@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<head>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+    * {
+      font-family: 'Roboto', sans-serif;
+    }
+
+        TT {
+      font-family: 'Terminal', monospace;
+          background-color: #080a0b;
+    }
+
+    body {
+      background-color: #181a1b;
+      color: white;
+    }
+
+    .main {
+      width: fit-content;
+      margin: auto;
+      max-width: 750px;
+    }
+
+    .main > section > :not(:first-child) {
+      margin-left: 20px;
+    }
+
+    .main a {
+      color: #F44;
+    }
+
+    .configure {
+      margin-bottom: 300px;
+    }
+
+    .install .iconify {
+      color: green;
+      filter: drop-shadow(0 0 0.75rem lime);
+    }
+
+    #changelog-body {
+      white-space: break-spaces;
+    }
+  </style>
+  <script type="module" src="https://unpkg.com/esp-web-tools@9/dist/web/install-button.js?module"></script>
+  <script src="//code.iconify.design/1/1.0.6/iconify.min.js"></script>
+  <script>
+    async function fetchChangelog() {
+      const response = await fetch("https://api.github.com/repos/aam335/cyd-dryer/releases/latest");
+      const data = await response.json();
+      document.getElementById("changelog-body").innerText = data.body;
+      document.getElementById("changelog-header-version").innerText += data.tag_name;
+    }
+
+    function setInstallButton(esp){
+      document.getElementById("install-btn").innerHTML = `<esp-web-install-button manifest="https://aam335.github.io/cyd-dryer/${esp}.json"></esp-web-install-button>`;
+    }
+
+    function setInstallButtonDefault(){
+      setInstallButton("esp32-2432S032С")
+    }
+
+    fetchChangelog();
+    window.onload = setInstallButtonDefault;
+  </script>
+</head>
+
+<body>
+  <section class="main">
+    <h2>cyd-dryer <span class="iconify" data-icon="mdi-printer-3d" style="color: #F44;"></span></h2>
+    <p><a href="https://github.com/aam335/cyd-dryer">Source code is available on GitHub</a>.</p>
+
+    <section class="changelog">
+      <h3 id="changelog-header"><span class="iconify" data-icon="mdi-hammer-wrench" style="color: lightgray;"></span> Changelog <span id="changelog-header-version"></span></h3>
+      <p id="changelog-body"></p>
+    </section>
+
+    <section class="issues">
+      <h3><span class="iconify" data-icon="mdi-github" style="color: white; filter: drop-shadow(0 0 0.75rem gray);"></span> Report Issues</h3>
+      <p>If you experience any issues with this project, or have any feature requests for the project, please report them on the <a href="https://github.com/aam335/cyd-dryer/issues">issues tab on Github</a>.</p>
+    </section>
+
+    <section class="install">
+      <h3><span class="iconify" data-icon="mdi-download"></span> Install</h3>
+      <p>Select your device from the list below and click 'Connect'.<br>Note: You may need to hold the 'BOOT' button on the device while pressing install.<br><br>The 2.8" Resistive and 3.5" Capacitive models are best suited (in my opinion) for cyd-dryer.<br><br>Note for any resistive models: You can clear touch calibration by holding the BOOT button for 8 seconds while the screen is on.</p>
+      <select id="select-install-btn" onchange="setInstallButton(getElementById('select-install-btn').value)">
+        <option  value="esp32-2432S028R">ESP32-2432S028 (2.8" Resistive)</option>
+        <option selected value="esp32-2432S032C-SD">ESP32-2432S032 (3.2" Capacitive)</option>
+        <!-- <option value="esp32-3248S035C">ESP32-3248S035 (3.5" Capacitive)</option>
+        <option value="esp32-3248S035C-V">ESP32-3248S035 (3.5" Capacitive) Vertical Orientation</option>
+        <option value="esp32-4827S043C-SD">ESP32-4827S043 (4.3" 480x270 Capacitive)</option>
+        <option value="esp32-8048S043C-SD">ESP32-8048S043 (4.3" 800x480 Capacitive)</option> -->
+      </select>
+      <span id="install-btn"></span>
+    </section>
+
+    <section class="configure">
+      <h3><span class="iconify" data-icon="mdi-wrench" style="color: cyan; filter: drop-shadow(0 0 0.75rem blue);"></span> Config</h3>
+      <p> After installing cyd-dryer, you can configure it using its touchscreen. <br>
+    </section>
+  </section>
+</body>

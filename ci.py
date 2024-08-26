@@ -52,7 +52,7 @@ def add_configuration(board : str):
     configurations.append({
         "Board": board,
         "Version": repo_version,
-        "URL": f"https://aam335.github.io/CYD-dryer/out/{board}/firmware.bin"
+        "URL": f"https://aam335.github.io/cyd-dryer/out/{board}/firmware.bin"
     })
 
 if os.path.exists("out"):
@@ -62,7 +62,7 @@ for port in CYD_PORTS:
     port_path = f"out/{port}"
     os.chdir(BASE_DIR)
     os.makedirs(port_path, exist_ok=True)
-    # os.chdir("CYD-Klipper")
+
     subprocess.run(["pio", "run", "-e", port], check=True)
     os.chdir(BASE_DIR)
     for file in ["bootloader.bin", "partitions.bin", "firmware.bin"]:
