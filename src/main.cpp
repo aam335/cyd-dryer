@@ -2,16 +2,13 @@
 
 #include <esp32_smartdisplay.h>
 #include <ui/ui.h>
-#include "SHTSensor.h"
 #include "Preferences.h"
-#include <Wire.h>
 
 #include "dryer.h"
 
 #define SDA_2 GPIO_NUM_21
 #define SCL_2 GPIO_NUM_22
 
-SHTSensor sht;
 hw_timer_t *Timer0_Cfg = NULL;
 
 void IRAM_ATTR Timer0_ISR()

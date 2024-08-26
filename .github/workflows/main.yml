@@ -20,8 +20,10 @@ jobs:
           python-version: "3.9"
       - name: Install PlatformIO
         run: python -m pip install -U platformio
-      - name: Build firmware
-        run: pio run
+      - name: Build PlatformIO Project
+        run: |
+          python3 ci.py
+          
       - name: Archive firmwares
         uses: actions/upload-artifact@v4
         with:
