@@ -51,6 +51,7 @@ void ui_event_Button1(lv_event_t * e);
 lv_obj_t * ui_Button1;
 lv_obj_t * ui_errortext;
 lv_obj_t * ui_Label6;
+lv_obj_t * ui_Label24;
 
 
 // SCREEN: ui_config
@@ -107,10 +108,9 @@ lv_obj_t * ui_beta;
 lv_obj_t * ui_Label10;
 lv_obj_t * ui_Label22;
 lv_obj_t * ui_Label23;
-void ui_event_Button2(lv_event_t * e);
-lv_obj_t * ui_Button2;
 void ui_event_Keyboard1(lv_event_t * e);
 lv_obj_t * ui_Keyboard1;
+lv_obj_t * ui_version;
 lv_obj_t * ui____initial_actions0;
 
 ///////////////////// TEST LVGL SETTINGS ////////////////////
@@ -300,14 +300,6 @@ void ui_event_beta(lv_event_t * e)
     }
     if(event_code == LV_EVENT_DEFOCUSED) {
         _ui_flag_modify(ui_Keyboard1, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_TOGGLE);
-    }
-}
-void ui_event_Button2(lv_event_t * e)
-{
-    lv_event_code_t event_code = lv_event_get_code(e);
-    lv_obj_t * target = lv_event_get_target(e);
-    if(event_code == LV_EVENT_CLICKED) {
-        beta_click(e);
     }
 }
 void ui_event_Keyboard1(lv_event_t * e)

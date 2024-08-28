@@ -59,6 +59,7 @@ void ui_event_Button1(lv_event_t * e);
 extern lv_obj_t * ui_Button1;
 extern lv_obj_t * ui_errortext;
 extern lv_obj_t * ui_Label6;
+extern lv_obj_t * ui_Label24;
 // SCREEN: ui_config
 void ui_config_screen_init(void);
 extern lv_obj_t * ui_config;
@@ -113,10 +114,9 @@ extern lv_obj_t * ui_beta;
 extern lv_obj_t * ui_Label10;
 extern lv_obj_t * ui_Label22;
 extern lv_obj_t * ui_Label23;
-void ui_event_Button2(lv_event_t * e);
-extern lv_obj_t * ui_Button2;
 void ui_event_Keyboard1(lv_event_t * e);
 extern lv_obj_t * ui_Keyboard1;
+extern lv_obj_t * ui_version;
 extern lv_obj_t * ui____initial_actions0;
 
 

@@ -49,7 +49,7 @@ void check_and_update_timer(int delta)
 
 void check_and_update_target_temperature(int target)
 {
-    config_t *c=get_config();
+    config_t *c = get_config();
     if (target > c->tmax)
     {
         target = c->tmax;
@@ -112,8 +112,8 @@ static char debug_text[200];
 
 void init_values()
 {
-    config_t *c=get_config();
-    
+    config_t *c = get_config();
+
     seconds_left = START_TIMER;
     target_temperature = c->tstart;
     lv_arc_set_range(ui_temperature, c->tmin, c->tmax);
@@ -122,6 +122,8 @@ void init_values()
     check_and_update_fan_pwm(c->fan_start);
     lv_label_set_text_fmt(ui_mintemp, "%d", c->tmin);
     lv_label_set_text_fmt(ui_maxtemp, "%d", c->tmax);
+    lv_label_set_text_fmt(ui_version, AUTO_VERSION);
+
     lv_obj_add_flag(ui_online, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui_errormodal, LV_OBJ_FLAG_HIDDEN);
     show_text_status();

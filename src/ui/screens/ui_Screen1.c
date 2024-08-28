@@ -343,6 +343,11 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_align(ui_Label6, LV_ALIGN_CENTER);
     lv_label_set_text(ui_Label6, "contine");
 
+    ui_Label24 = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_Label24, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_Label24, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_align(ui_Label24, LV_ALIGN_CENTER);
+
     lv_obj_add_event_cb(ui_temperature, ui_event_temperature, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_onoffarea, ui_event_onoffarea, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_minus60, ui_event_minus60, LV_EVENT_ALL, NULL);

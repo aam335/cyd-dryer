@@ -22,7 +22,6 @@ void continue_cb(lv_event_t * e);
 void pidselected(lv_event_t * e);
 void save_menu_data(lv_event_t * e);
 void reset_menu_pid(lv_event_t * e);
-void beta_click(lv_event_t * e);
 
 #ifdef __cplusplus
 } /*extern "C"*/
