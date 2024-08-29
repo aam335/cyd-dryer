@@ -36,11 +36,9 @@ void setup()
     // smartdisplay_lcd_set_brightness_cb(smartdisplay_lcd_adaptive_brightness_cds, 100); // todo limit min value
 #endif
     __attribute__((unused)) auto disp = lv_disp_get_default();
-    // lv_disp_clean_dcach  e(disp);
 
-    lv_disp_set_rotation(disp, LV_DISP_ROT_90);
-    // lv_disp_set_rotation(disp, LV_DISP_ROT_180);
-    // lv_disp_set_rotation(disp, LV_DISP_ROT_270);
+    lv_disp_set_rotation(disp, LV_DISP_ROTATION_90);
+
     load_config();
     config_t *c = get_config();
     ntc_init(THERMISTOR_PIN, c->r25, c->r_div, c->beta);
@@ -62,6 +60,8 @@ crDef(poll_rgbled);
 crDef(poll_status);
 crDef(poll_notify);
 
+static auto lv_last_tick = millis();
+
 void loop()
 {
     system_millis = millis();
@@ -73,6 +73,9 @@ void loop()
 #ifdef BOARD_HAS_RGB_LED
     crPoll(poll_rgbled);
 #endif
+    auto const now = millis();
+    lv_tick_inc(now - lv_last_tick);
+    lv_last_tick = now;
     lv_timer_handler();
 }
 
