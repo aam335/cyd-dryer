@@ -79,12 +79,7 @@ void ui_Screen1_screen_init(void)
     lv_obj_remove_flag(ui_onoffarea, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
     lv_obj_set_style_radius(ui_onoffarea, 100, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui_onoffarea, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_onoffarea, 80, LV_PART_MAIN | LV_STATE_DEFAULT);
-    ui_object_set_themeable_style_property(ui_onoffarea, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BG_GRAD_COLOR,
-                                           _ui_theme_color_button);
-    lv_obj_set_style_bg_main_stop(ui_onoffarea, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_stop(ui_onoffarea, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_dir(ui_onoffarea, LV_GRAD_DIR_VER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_onoffarea, 50, LV_PART_MAIN | LV_STATE_DEFAULT);
     ui_object_set_themeable_style_property(ui_onoffarea, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BORDER_COLOR,
                                            _ui_theme_color_button);
     ui_object_set_themeable_style_property(ui_onoffarea, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BORDER_OPA,
@@ -107,7 +102,8 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_width(ui_online, lv_pct(70));
     lv_obj_set_height(ui_online, lv_pct(70));
     lv_obj_set_align(ui_online, LV_ALIGN_CENTER);
-    lv_obj_remove_flag(ui_online, LV_OBJ_FLAG_CLICKABLE);      /// Flags
+    lv_obj_remove_flag(ui_online, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
     lv_obj_set_style_arc_color(ui_online, lv_color_hex(0x4040FF), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_arc_opa(ui_online, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_arc_width(ui_online, 6, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -116,7 +112,6 @@ void ui_Screen1_screen_init(void)
                                            _ui_theme_color_button);
     ui_object_set_themeable_style_property(ui_online, LV_PART_INDICATOR | LV_STATE_DEFAULT, LV_STYLE_ARC_OPA,
                                            _ui_theme_alpha_button);
-    lv_obj_set_style_arc_width(ui_online, 5, LV_PART_INDICATOR | LV_STATE_DEFAULT);
 
     ui_minus60 = lv_button_create(ui_mainscreen);
     lv_obj_set_width(ui_minus60, 50);

@@ -49,7 +49,7 @@ void setup()
     smartdisplay_lcd_set_backlight(1.f);
 
     Timer0_Cfg = timerBegin(0, 80, true);
-    timerAttachInterrupt(Timer0_Cfg, &Timer0_ISR, true);
+    timerAttachInterrupt(Timer0_Cfg, &Timer0_ISR, false);
     timerAlarmWrite(Timer0_Cfg, 1000, true);
     timerAlarmEnable(Timer0_Cfg);
 }
@@ -59,12 +59,15 @@ crDef(poll_sensors);
 crDef(poll_rgbled);
 crDef(poll_status);
 crDef(poll_notify);
+crDef(poll_lv);
 
 static auto lv_last_tick = millis();
 
 void loop()
 {
+
     system_millis = millis();
+    crPoll(poll_lv);
 
     crPoll(poll_sensors);
     crPoll(poll_esm2);
@@ -73,10 +76,15 @@ void loop()
 #ifdef BOARD_HAS_RGB_LED
     crPoll(poll_rgbled);
 #endif
+}
+
+uint32_t poll_lv()
+{
     auto const now = millis();
     lv_tick_inc(now - lv_last_tick);
     lv_last_tick = now;
-    lv_timer_handler();
+
+    return lv_timer_handler();
 }
 
 uint32_t poll_esm2()
