@@ -70,7 +70,7 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_y(ui_timeft, 14);
     lv_obj_set_align(ui_timeft, LV_ALIGN_CENTER);
     lv_label_set_text(ui_timeft, "00:00");
-    lv_obj_set_style_text_font(ui_timeft, &lv_font_montserrat_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_timeft, &lv_font_montserrat_34, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_onoffarea = lv_obj_create(ui_temeratureindicator);
     lv_obj_set_width(ui_onoffarea, lv_pct(71));
