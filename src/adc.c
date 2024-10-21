@@ -308,7 +308,7 @@ void ntc_init(int pin, int r25, int r_div, int beta)
     analogSetWidth(ADC_RESOLUTION);
     analogSetClockDiv(255);
 
-    esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_12, ADC_WIDTH_BIT_12, 1100, &adc_chars);
+    esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_11, ADC_WIDTH_BIT_12, 1100, &adc_chars);
 }
 
 static inline float _fabs(float a)
