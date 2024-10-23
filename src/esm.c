@@ -19,16 +19,16 @@ typedef struct
     uint32_t preheating_start_ms;
     int32_t undertemp_ms;
     float preheating_prev_temp;
-    uint32_t gangbang_cycle;
+    uint32_t bangbang_cycle;
     int algo_fan_pwm;
     float back_temperature;
 } esm_t;
 
 esm_t esm = {.algo_fan_pwm = 0,
-             .gangbang_cycle = 0,
+             .bangbang_cycle = 0,
              .preheating_prev_temp = 0,
              .preheating_start_ms = 0,
-             .gangbang_cycle = 0,
+             .bangbang_cycle = 0,
              .undertemp_ms = MAX_UNDERTEMP_MS};
 
 #define ESM_NEXT_STATE true
@@ -89,8 +89,7 @@ bool _esm_preheating_dumb()
 
 bool _esm_preheating()
 {
-
-    switch (esm.gangbang_cycle & 1)
+    switch (esm.bangbang_cycle & 1)
     {
     case 0: // heating
         if (esm.back_temperature < (target_temperature))
@@ -106,17 +105,13 @@ bool _esm_preheating()
         break;
     }
 
-    if (esm.gangbang_cycle & 1) // if cooling done and time or iterations count done
+    if (esm.bangbang_cycle & 1) // if cooling done and time or iterations count done
     {
-        if (system_millis - esm.preheating_start_ms > PREHEATING_MIN_PERIOD ||
-            esm.gangbang_cycle >= PREHEATING_GANGBANG_MIN_CYCLES)
-        {
-            return ESM_NEXT_STATE;
-        }
+       return ESM_NEXT_STATE;
     }
 
-    esm.gangbang_cycle++;
-    set_pwm(PWM_HEATER, esm.gangbang_cycle & 1 ? 0 : PWM_FULL_CYCLE);
+    esm.bangbang_cycle++;
+    set_pwm(PWM_HEATER, esm.bangbang_cycle & 1 ? 0 : PWM_FULL_CYCLE);
 
     return ESM_CONTINUE_STATE;
 }
@@ -198,7 +193,7 @@ uint32_t poll_esm()
         esm.preheating_prev_temp = esm.back_temperature;
         set_pwm(PWM_HEATER, PWM_FULL_CYCLE);
         esm.algo_fan_pwm = NORMAL_FAN_PWM;
-        esm.gangbang_cycle = 0;
+        esm.bangbang_cycle = 0;
     }
 
     crNext();
@@ -211,7 +206,7 @@ uint32_t poll_esm()
 
         esm_status = STATUS_PREHEATING;
         esm.preheating_start_ms = system_millis;
-        esm.gangbang_cycle = 0;
+        esm.bangbang_cycle = 0;
         config_t *c = get_config();
         autopid_init(0, PWM_FULL_CYCLE, target_temperature, c->zn_mode);
     }
