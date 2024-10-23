@@ -3,6 +3,7 @@ import subprocess, os, shutil, json
 CYD_PORTS = [
     "esp32-2432S032C",
     "esp32-2432S024R",
+    "esp32-2432S024С",
 ]
 
 ESP_S3_CHIPS = [
