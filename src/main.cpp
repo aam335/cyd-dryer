@@ -61,8 +61,6 @@ crDef(poll_status);
 crDef(poll_notify);
 crDef(poll_lv);
 
-static auto lv_last_tick = millis();
-
 void loop()
 {
 
@@ -80,10 +78,6 @@ void loop()
 
 uint32_t poll_lv()
 {
-    auto const now = millis();
-    // lv_tick_inc(now - lv_last_tick);
-    // lv_last_tick = now;
-
     return lv_timer_handler();
 }
 
@@ -122,8 +116,6 @@ uint32_t poll_sensors()
         }
         set_failure(FAIL_SENSOR);
     }
-
-    // apply_temperature(t_celsius, ERRORED_SENSOR);
 
     return SENSORS_POLL_INTERVAL;
 }

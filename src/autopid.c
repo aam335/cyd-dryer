@@ -9,6 +9,8 @@ autopid_t autopid;
 
 void autopid_init(int min_output, int max_output, float target, uint8_t zn_mode)
 {
+    autopid.min_output = min_output;
+    autopid.max_output = max_output;
     if (autopid_finished())
     {
         autopid.target_input_value = target;
@@ -20,8 +22,7 @@ void autopid_init(int min_output, int max_output, float target, uint8_t zn_mode)
     memset(&autopid, 0, sizeof(autopid_t));
     autopid.zn_mode = zn_mode;
     autopid.loop_interval = DEFAULT_LOOP_INTERVAL;
-    autopid.min_output = min_output;
-    autopid.max_output = max_output;
+
     autopid.cycles = DEFAULT_TUNING_CYCLES;
     autopid.target_input_value = target;
 
@@ -138,6 +139,9 @@ float autopid_run(float input, uint32_t ms)
     autopid.microseconds = ms;
 
     float output = autopid.kp * error + autopid.ki * autopid.err_sum + autopid.kd * d_err;
+    log_i("kp=%f ki=%f kp=%f", autopid.kp * 1000, autopid.ki * 1000, autopid.kd * 1000);
+    log_i("error=%f autopid.err_sum=%f d_err=%f output=%f", error, autopid.err_sum, d_err, output);
+
     // output = output * (autopid.max_output - autopid.min_output) / 100 + autopid.min_output;
     if (output < 0)
     {
