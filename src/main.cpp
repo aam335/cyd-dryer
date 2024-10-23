@@ -37,7 +37,7 @@ void setup()
 #endif
     __attribute__((unused)) auto disp = lv_disp_get_default();
 
-    lv_disp_set_rotation(disp, LV_DISP_ROTATION_90);
+    lv_disp_set_rotation(disp, LV_DISP_ROT_90);
 
     load_config();
     config_t *c = get_config();
@@ -81,8 +81,8 @@ void loop()
 uint32_t poll_lv()
 {
     auto const now = millis();
-    lv_tick_inc(now - lv_last_tick);
-    lv_last_tick = now;
+    // lv_tick_inc(now - lv_last_tick);
+    // lv_last_tick = now;
 
     return lv_timer_handler();
 }
